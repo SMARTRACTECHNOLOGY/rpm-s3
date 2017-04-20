@@ -108,11 +108,12 @@ class FileGrabber(object):
 
 def getclient(base, region):
     host_url = "s3.amazonaws.com" if region == "us-east-1" else "s3-{}.amazonaws.com".format(region)
-    if os.getenv('AWS_ACCESS_KEY'):
+    if os.getenv('AWS_ACCESS_KEY_ID'):
         return boto.connect_s3(
-            os.getenv('AWS_ACCESS_KEY'),
-            os.getenv('AWS_SECRET_KEY'),
-            host=host_url
+            os.getenv('AWS_ACCESS_KEY_ID'),
+            os.getenv('AWS_SECRET_ACCESS_KEY'),
+            host=host_url,
+            calling_format=boto.config.get('s3', 'calling_format', 'boto.s3.connection.OrdinaryCallingFormat')
         ).get_bucket(base.netloc)
     else:
         return boto.connect_s3(
